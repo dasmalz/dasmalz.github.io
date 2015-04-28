@@ -1,7 +1,132 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<title>MalzMap</title>
+	<meta charset="utf-8">
+	<meta name="generator" content="leafletR">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<link rel="dat1" type="application/json" href="dasmalz.geojson" />
+	<style type="text/css">
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+		}
+	</style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+	<div id="map"></div>
+	<script type="text/javascript">
+		var map = L.map('map');
+		
+		// scale bar
+		L.control.scale().addTo(map);
+
+		// base layer
+		var baseMaps = {};
+		var baseMap = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {"attribution":"&copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>"});
+		baseMap.addTo(map);
+		baseMaps["OpenStreetMap"] = baseMap;
+
+		// popup
+		function onEachFeature(feature, layer) {
+			if (feature.properties &&  feature.properties["Brauerei"] && feature.properties["Marke"]) {
+				layer.bindPopup(
+					"<b>" + feature.properties["Brauerei"]+"</b><br>" + feature.properties["Marke"]
+				);
+			}
+		}
+
+		// data layers
+        var layers = {};
+        var group = new L.featureGroup;
+		function addDataToMap(data, style, layer) {
+			layers[layer] = L.geoJson(data, {
+				onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
+				pointToLayer: function (feature, latlng) {return L.marker(latlng);},
+				style: style
+			});
+			layers[layer].addTo(map);	
+        	group.addLayer(layers[layer])
+			map.fitBounds(group.getBounds());
+		};
+		
+		if(typeof style1 == "undefined") style1 = undefined;
+		addDataToMap({
+		"type": "FeatureCollection",
+		"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+		                                                                                
+		"features": [
+		{ "type": "Feature", "properties": { "Brauerei": "Hochstiftliches Brauhaus in Bayern GmbH & Co. KG", "Marke": "Original Bayerisch Malz" }, "geometry": { "type": "Point", "coordinates": [ 9.770966, 50.397137, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Eichbaum Brauerei", "Marke": "Karamalz, Karamalz Fresh Lemon, Kara Aktiv" }, "geometry": { "type": "Point", "coordinates": [ 8.482132, 49.492214, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Pinkus Müller", "Marke": "Müller's Malz, Pinkus Honig Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.627945, 51.965, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Feldschlößchen AG", "Marke": "Karlsquell Malz (Aldi), Karlskrone Malz" }, "geometry": { "type": "Point", "coordinates": [ 10.516663, 52.265846, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Haffner", "Marke": "Bergbräu Malz" }, "geometry": { "type": "Point", "coordinates": [ 9.644451, 51.577175, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Stutzhäuser Brauerei", "Marke": "Waidbauer Malz" }, "geometry": { "type": "Point", "coordinates": [ 10.72197, 50.783363, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Binding-Brauerei AG", "Marke": "Kraftmalz" }, "geometry": { "type": "Point", "coordinates": [ 8.673706, 50.12234, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Flensburger Brauerei", "Marke": "Flensburger Malz" }, "geometry": { "type": "Point", "coordinates": [ 9.435883, 54.786831, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Dortmunder Union-Ritter Brauerei GmbH", "Marke": "Maxi Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.46109, 51.525833, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Dortmunder Actien-Brauerei AG", "Marke": "Felskrone Malz, Waldschloß Malz, Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 7.46879595794262, 51.530216280814798, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Traugott Simon Brau- und Vertriebsgesellschaft mbH", "Marke": "Traugott Simon Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.958466, 50.954967, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Feldschlösschen Brauerei", "Marke": "Feldschlösschen Malz Klassik, Feldschlösschen Malz Light, Malco, Feldschlösschen Bio Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.59111, 51.73447, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Schultheis Brauerei", "Marke": "Kandi Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.454567, 50.418144, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Hansa Brauerei", "Marke": "Hansa Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.483406, 51.523483, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "trinklog GmbH", "Marke": "Landfürst Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.886368, 51.433464, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei C. & A. Veltins GmbH & Co. KG", "Marke": "Veltins Malz" }, "geometry": { "type": "Point", "coordinates": [ 8.128681, 51.306259, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Eder & Heylands Brauerei", "Marke": "Sportmalz" }, "geometry": { "type": "Point", "coordinates": [ 9.076424, 49.921608, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Gebr. Sünner", "Marke": "Sünner Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.983185, 50.947395, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Steffens", "Marke": "Steffens Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.284622, 50.570591, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "trinkgut Markenvertrieb", "Marke": "Oscar Maxxum Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.764832, 51.436249, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Joh. Cramer & Cie.", "Marke": "Cramer Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.563644, 50.673183, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "St. Martin Brauerei", "Marke": "Lahnsteiner Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.603226, 50.311489, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Bolten", "Marke": "Boltens Caramel" }, "geometry": { "type": "Point", "coordinates": [ 6.508369, 51.193222, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Bischoff", "Marke": "Bischoff Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.849216, 49.570648, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Neumarkter Lammsbräu", "Marke": "Aktivmalz" }, "geometry": { "type": "Point", "coordinates": [ 11.454964, 49.288635, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Darguner Brauerei", "Marke": "Darguner Malztrunk" }, "geometry": { "type": "Point", "coordinates": [ 12.85675, 53.900696, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Lütticke & Tschirschnitz Gastronomie-Getränke GmbH", "Marke": "L & T Caramel Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.93924, 50.944584, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Paderborner Brauerei", "Marke": "Paderborner Malz, Isi Malta" }, "geometry": { "type": "Point", "coordinates": [ 8.745117, 51.723625, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Erzquell Brauerei Bielstein", "Marke": "Golden Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.506409, 50.96405, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Jacob Stauder GmbH & Co. KG", "Marke": "Qualitäts-Malz tut gut" }, "geometry": { "type": "Point", "coordinates": [ 7.012024, 51.458286, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Riedenburger Brauhaus", "Marke": "Riedenburger Dinkelmalz" }, "geometry": { "type": "Point", "coordinates": [ 11.68705, 48.963539, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Schwelm", "Marke": "Schwelmer Malztrunk" }, "geometry": { "type": "Point", "coordinates": [ 7.291145, 51.289192, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Gräflich von Mengersen’sche Dampfbrauerei Rheder", "Marke": "Schloßbräu Rheder Malz" }, "geometry": { "type": "Point", "coordinates": [ 9.162769, 51.681072, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Iserlohn GmbH", "Marke": "Iserlohner Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.699013, 51.376923, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Frankfurter Brauhaus GmbH", "Marke": "Grafenwalder Malz" }, "geometry": { "type": "Point", "coordinates": [ 14.545212, 52.342892, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Westerwald-Brauerei H. Schneider", "Marke": "Hachenburger Malz" }, "geometry": { "type": "Point", "coordinates": [ 7.820549, 50.6623, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privat-Brauerei Schmucker GmbH & Co. KG", "Marke": "Schmucker Malz" }, "geometry": { "type": "Point", "coordinates": [ 8.924675, 49.67785, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Distelhäuser Brauerei", "Marke": "Distelhäuser Malz, Distelhäuser Malz + Kalamansi, Distelhäuser Malz + Tayberry, Distelhäuser Malz + Cappuccino" }, "geometry": { "type": "Point", "coordinates": [ 9.694061, 49.600697, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Schlossbrauerei Fürstlich Drehna", "Marke": "Fürstlich Drehna Premium Malz" }, "geometry": { "type": "Point", "coordinates": [ 13.705444, 51.85614, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Sternburg Brauerei", "Marke": "Sternburg Doppel Karamel" }, "geometry": { "type": "Point", "coordinates": [ 12.387085, 51.345196, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Eschweger Klosterbrauerei", "Marke": "Privat-Malz" }, "geometry": { "type": "Point", "coordinates": [ 10.04631, 51.192253, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Grosch", "Marke": "Grosch Malztrunk" }, "geometry": { "type": "Point", "coordinates": [ 11.029758103309421, 50.288471057139184, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei Ernst Barre GmbH", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 8.614998, 52.304279, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Gilde Brauerei AG", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 9.735947, 52.380211, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Glaabsbräu GmbH & Co. KG", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 8.971367, 50.046116, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Beck & Co.", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 8.805542, 53.079178, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Hacker-Pschorr Bräu GmbH", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 11.532898, 48.145473, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Holsten Brauerei AG", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 9.946833, 53.561214, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Krombacher Brauerei B. Schadeberg GmbH & Co. KG", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 7.99942, 50.964912, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Privatbrauerei A. Rolinck GmbH & Co. KG", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 7.340927, 52.157505, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Tucher Bräu GmbH & Co. KG Brauereibetriebsgesellschaft", "Marke": "Vitamalz" }, "geometry": { "type": "Point", "coordinates": [ 10.987701, 49.48597, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Gotha", "Marke": "Oettinger Malz" }, "geometry": { "type": "Point", "coordinates": [ 10.698624, 50.955399, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Mönchengladbach", "Marke": "Oettinger Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.447945, 51.191177, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Dessow", "Marke": "Oettinger Malz" }, "geometry": { "type": "Point", "coordinates": [ 12.553596, 52.897305, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Schweriner Schloßbrauerei", "Marke": "Oettinger Malz" }, "geometry": { "type": "Point", "coordinates": [ 11.408615, 53.628761, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Oettinger Brauerei", "Marke": "Oettinger Malz" }, "geometry": { "type": "Point", "coordinates": [ 10.606613, 48.955425, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Alsfeld", "Marke": "Alsfelder Malztrunk" }, "geometry": { "type": "Point", "coordinates": [ 9.271774, 50.757744, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei und Oberharzer Brunnen Paul Kolberg GmbH & Co.KG", "Marke": "Altenauer Malz" }, "geometry": { "type": "Point", "coordinates": [ 10.448320000421081, 51.80076999954322, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Königshof", "Marke": "Königshof Malz" }, "geometry": { "type": "Point", "coordinates": [ 6.571800000919912, 51.316000000139489, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Liebhart’s Privatbrauerei GmbH & Co.KG", "Marke": "Bio Malz" }, "geometry": { "type": "Point", "coordinates": [ 8.861600000094864, 51.948319999557683, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Löwenbräu", "Marke": "Löwenmalz" }, "geometry": { "type": "Point", "coordinates": [ 11.57547, 48.144096, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Franken Bräu", "Marke": "Power Malz" }, "geometry": { "type": "Point", "coordinates": [ 11.210518, 50.2505, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Franz Xaver Glossner", "Marke": "Privat Malz" }, "geometry": { "type": "Point", "coordinates": [ 11.47310200040053, 49.262829000602302, 0.0 ] } },
+		{ "type": "Feature", "properties": { "Brauerei": "Brauerei Wiethaler", "Marke": "Wiethaler Malz" }, "geometry": { "type": "Point", "coordinates": [ 11.22990999011992, 49.554494997366717, 0.0 ] } }
+		]
+		}, style1, "dasmalz");
+	</script>
 </body>
 </html>
